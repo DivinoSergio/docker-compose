@@ -1,0 +1,21 @@
+volumes:
+  db_mysql:
+
+networks:
+  my_net:
+    driver: bridge
+
+services:
+  mysql:
+    image: mysql:9.1.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 3303:3306
+    volumes:
+      - db_mysql:/var/lib/mysql
+    networks:
+      - my_net

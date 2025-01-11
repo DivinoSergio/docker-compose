@@ -14,26 +14,17 @@ Construir uma imagem com **Docker** para rodar um aplicação Web Java com **AS 
 	<img loading="lazy" src="https://img.shields.io/badge/Docker-v27.3.1-blue?logo=docker"/>
 </p>
 
-### Gerar artefato WAR com Maven 
-```
-mvn clean install
-```
 ### Criando imagem Docker
 
 ```
-docker build -t docker-tomcat .
+docker compose -p servidor_mysql -f compose-db.yaml up -d
 ```
 ### Ativando Container 
 
 ```bash
-docker run -p 8080:8080 docker-tomcat
+docker compose -f compose-db.yaml down
 ```
 
-### Teste no navegador
-
-```bash
-http://localhost:8080/docker-tomcat/
-```
 
 # Referências
 
