@@ -1,0 +1,53 @@
+volumes:
+  gp_db:
+  gp_vol:
+
+networks:
+  gp_net:
+    driver: bridge
+    
+services:
+  servidor_mysql:
+    hostname: servidor_mysql
+    container_name: servidor_mysql
+    image: mysql:8.0.40
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./deploy/init:/docker-entrypoint-initdb.d
+      # - db_blog:/var/lib/mysql
+    ports:
+      - "3303:3306"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.95"
+          memory: 4G
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      TZ: America/Sao_Paulo
+    networks:
+      - gp_net
+
+  web:
+    image: projectmaneger
+    container_name: gp_web
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - servidor_mysql
+    environment:
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}  
+      DB_DATABASE: ${DB_DATABASE}  
+    volumes:
+      - gp_vol:/usr/local/tomcat/webapps
+    ports:
+      - 8080:8080
+    networks:
+      - gp_net
